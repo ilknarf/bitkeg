@@ -20,26 +20,36 @@ struct BitkegEntry {
   time_t tstamp;
 };
 
-class BitkegInstance {
+class KeyDir {
  public:
-  BitkegInstance(string dir);
-  string Get(string key);
-  void Put(string key, string val);
-  vector<string> ListKeys();
+  KeyDir(string dir);
+
   template<typename Acc>
-  Acc Fold(Acc (*fn)(string key, string val, Acc so_far), Acc acc0);
-  string GetDir();
+  Acc Fold(Acc (*fn)(string _key, string _val, Acc _so_far), Acc acc0);
+  BitkegEntry Get(string key);
+  string Dir();
+  vector<string> ListKeys();
+  void Put(string key, BitkegEntry val);
+  void Merge();
  private:
-  const string dir;
-  map<string, BitkegEntry> entry_map;
+  const string dir_;
+
+  map<string, const BitkegEntry> entry_map_;
+};
+
+class KegInstance {
+ public:
+  void Put(string key, string value);
+ private:
+  KeyDir key_dir_;
 };
 
 class Bitkeg {
  public:
   Bitkeg();
-  shared_ptr<BitkegInstance> Open(string dir);
+  shared_ptr<KeyDir> Open(string dir);
  private:
-  map<string, shared_ptr<BitkegInstance> > open_kegs{};
+  map<string, shared_ptr<KeyDir> > open_kegs_;
 };
 
 #endif //BITKEG_BITKEG_H

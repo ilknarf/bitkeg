@@ -12,24 +12,24 @@ using std::shared_ptr;
 using std::pair;
 
 // Bitkeg implementations
-Bitkeg::Bitkeg() : open_kegs() {}
+Bitkeg::Bitkeg() : open_kegs_() {}
 
-shared_ptr<BitkegInstance> Bitkeg::Open(string dir) {
-  if (open_kegs.count(dir) > 0) {
-    return open_kegs[dir];
+shared_ptr<KeyDir> Bitkeg::Open(string dir) {
+  if (open_kegs_.count(dir) > 0) {
+    return open_kegs_.at(dir);
   } else {
-    auto new_keg_instance = std::make_shared<BitkegInstance>(dir);
-    open_kegs.insert(pair<string, shared_ptr<BitkegInstance> >(dir, new_keg_instance));
+    auto new_keg_instance = std::make_shared<KeyDir>(dir);
+    open_kegs_.insert(pair<string, shared_ptr<KeyDir> >(dir, new_keg_instance));
 
     return new_keg_instance;
   }
 }
 
-BitkegInstance::BitkegInstance(string dir) : dir(dir) {}
+// KeyDir implementations
+KeyDir::KeyDir(string dir) : dir_(dir) {}
 
-// BitkegInstance implementations
 template<typename Acc>
-Acc BitkegInstance::Fold(Acc (*fn)(string key, string val, Acc so_far), Acc acc0) {
+Acc KeyDir::Fold(Acc (*fn)(string key, string val, Acc so_far), Acc acc0) {
   for (auto key : ListKeys() ) {
     auto val = Get(key);
     acc0 = fn(key, val, acc0);
@@ -38,11 +38,24 @@ Acc BitkegInstance::Fold(Acc (*fn)(string key, string val, Acc so_far), Acc acc0
   return acc0;
 }
 
-void BitkegInstance::Put(string key, string val) {
-
+BitkegEntry KeyDir::Get(string key) {
+  return BitkegEntry{};
 }
 
-string BitkegInstance::GetDir() {
-  return dir;
+void KeyDir::Put(string key, BitkegEntry val) {
+  entry_map_.insert(pair<string, BitkegEntry>(key, val));
+}
+
+vector<string> KeyDir::ListKeys() {
+  vector<string> v;
+  for (auto pair : entry_map_) {
+    v.push_back(pair.first);
+  }
+
+  return v;
+}
+
+string KeyDir::Dir() {
+  return dir_;
 }
 

@@ -13,12 +13,11 @@ using std::shared_ptr;
 using std::vector;
 using std::time_t;
 
-class Bitkeg {
- public:
-  Bitkeg();
-  shared_ptr<BitkegInstance> Open(string dir);
- private:
-  map<string, shared_ptr<BitkegInstance>> open_kegs{};
+struct BitkegEntry {
+  string file_id;
+  int value_sz;
+  long value_pos;
+  time_t tstamp;
 };
 
 class BitkegInstance {
@@ -31,15 +30,16 @@ class BitkegInstance {
   Acc Fold(Acc (*fn)(string key, string val, Acc so_far), Acc acc0);
   string GetDir();
  private:
-  string dir;
+  const string dir;
   map<string, BitkegEntry> entry_map;
 };
 
-struct BitkegEntry {
-  string file_id;
-  int value_sz;
-  long value_pos;
-  time_t tstamp;
+class Bitkeg {
+ public:
+  Bitkeg();
+  shared_ptr<BitkegInstance> Open(string dir);
+ private:
+  map<string, shared_ptr<BitkegInstance> > open_kegs{};
 };
 
 #endif //BITKEG_BITKEG_H

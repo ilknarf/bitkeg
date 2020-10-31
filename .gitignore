@@ -1,6 +1,13 @@
-CMakeCache.txt
-cmake_install.cmake
-CMakeFiles/
 .idea/
-Makefile
 *.cbp
+
+Makefile
+CMakeFiles/
+runUnitTests
+Testing/
+CMakeCache.txt
+*.cmake
+cmake-build-debug/
+
+*.a
+*.o

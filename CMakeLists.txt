@@ -1,6 +1,31 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(bitkeg VERSION 0.1)
+# Project names
+set(PROJECT_NAME bitkeg)
+project(${PROJECT_NAME} VERSION 0.1)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-add_library(bitkeg SHARED src/bitkeg.cc)
+# Compiler flags
+set(CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+
+include_directories(${PROJECT_SOURCE_DIR}/include)
+
+file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cc)
+
+add_library(bitkeg ${SRC_FILES})
+
+#gtest
+add_subdirectory(./lib/googletest)
+
+enable_testing()
+
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+
+file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/gtest/*.cc)
+
+add_executable(runUnitTests ${TEST_SRC_FILES})
+
+target_link_libraries(runUnitTests gtest gtest_main)
+target_link_libraries(runUnitTests bitkeg)
+
+add_test(UnitTests runUnitTests)

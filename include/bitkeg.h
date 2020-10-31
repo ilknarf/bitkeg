@@ -1,0 +1,4 @@
+#ifndef BITKEG_BITKEG_H
+#define BITKEG_BITKEG_H
+
+#endif //BITKEG_BITKEG_H

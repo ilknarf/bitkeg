@@ -1,46 +1,41 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <functional>
+#include <memory>
 #include "../include/bitkeg.h"
 
 using std::map;
 using std::string;
 using std::vector;
-using std::less;
+using std::shared_ptr;
 
-class BitKeg {
- public:
-  BitKeg() : less() {
+// Bitkeg implementations
+Bitkeg::Bitkeg() : open_kegs(new map<string, shared_ptr<KegInstance>>) {}
 
-  }
-
-  void Open(string dir) {
-
-  }
- private:
-  map<string, &KegInstance<string, string>>;
-};
-
-class KegInstance {
- public:
-  void Merge() {
+shared_ptr<KegInstance> Bitkeg::Open(string dir) {
+  if (open_kegs.count(dir) > 0) {
+    return open_kegs[dir];
+  } else {
 
   }
+}
 
-  template<typename Acc>
-  Acc Fold(Acc (*fn)(string, string, Acc), acc0) {
-    for (auto key : this->ListKeys() ) {
-      auto val = this->Get(key)l
-      acc0 = fn(key, val, acc0);
-    }
+// BitkegInstance implementations
+template<typename Acc>
+Acc BitkegInstance::Fold(Acc (*fn)(string key, string val, Acc so_far), acc0) {
+  for (auto key : ListKeys() ) {
+    auto val = Get(key)l
+    acc0 = fn(key, val, acc0);
   }
 
-  vector<string> ListKeys() {
-    return vector<string>();
-  }
+  return acc0;
+}
 
-  string Get(K key) {
-    return "";
-  }
-};
+void BitkegInstance::Put(string key, string val) {
+
+}
+
+string BitkegInstance::GetDir() {
+  return dir;
+}
+

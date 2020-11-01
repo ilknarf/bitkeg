@@ -3,14 +3,14 @@
 // Bitkeg implementations
 Bitkeg::Bitkeg() : open_kegs_() {}
 
-shared_ptr<KeyDir> Bitkeg::Open(string dir) {
+KegProcess* Bitkeg::Open(string dir) {
   if (open_kegs_.count(dir) > 0) {
-    return open_kegs_.at(dir);
+    return new KegProcess(open_kegs_.at(dir));
   } else {
     auto new_keg_instance = std::make_shared<KeyDir>(dir);
     open_kegs_.insert(pair<string, shared_ptr<KeyDir> >(dir, new_keg_instance));
 
-    return new_keg_instance;
+    return new KegProcess(new_keg_instance);
   }
 }
 
@@ -44,12 +44,18 @@ vector<string> KeyDir::ListKeys() {
   return v;
 }
 
-string KeyDir::Dir() {
+const string KeyDir::Dir() {
   return dir_;
 }
 
 //KegProcess implementations
-KegProcess::KegProcess(KeyDir k) : key_dir_(k) {}
+KegProcess::KegProcess(shared_ptr<KeyDir> k) : key_dir_(*k), current_file_() {
+  string filepath = RandomString();
+  if (std::filesystem::exists(filepath)) {
+    throw 1;
+  }
+  current_file_.open(filepath, std::ios::binary);
+}
 
 vector<string> KegProcess::ListKeys() {
   return key_dir_.ListKeys();
@@ -65,4 +71,14 @@ void KegProcess::Put(string key, string value) {
   };
 
   key_dir_.Put(key, b);
+}
+
+// STUB for random string function
+string RandomString() {
+  return "hello";
+}
+
+// exception implementation
+const char *FileExistsException::what() noexcept {
+  return "File already exists";
 }

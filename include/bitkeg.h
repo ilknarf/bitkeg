@@ -6,6 +6,10 @@
 #include <string>
 #include <memory>
 #include <ctime>
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+#include <exception>
 
 using std::string;
 using std::map;
@@ -28,7 +32,7 @@ class KeyDir {
   template<typename Acc>
   Acc Fold(Acc (*fn)(string _key, string _val, Acc _so_far), Acc acc0);
   BitkegEntry Get(string key);
-  string Dir();
+  const string Dir();
   vector<string> ListKeys();
   void Put(string key, BitkegEntry val);
   void Merge();
@@ -40,19 +44,27 @@ class KeyDir {
 
 class KegProcess {
  public:
-  KegProcess(KeyDir k);
+  KegProcess(shared_ptr<KeyDir> k);
   void Put(string key, string value);
   vector<string> ListKeys();
  private:
+  void OpenNewFile();
   KeyDir key_dir_;
+  std::ofstream current_file_;
 };
 
 class Bitkeg {
  public:
   Bitkeg();
-  shared_ptr<KeyDir> Open(string dir);
+  KegProcess* Open(string dir);
  private:
   map<string, shared_ptr<KeyDir> > open_kegs_;
+};
+
+string RandomString();
+
+class FileExistsException : virtual public std::exception {
+  const char* what() noexcept;
 };
 
 #endif //BITKEG_BITKEG_H

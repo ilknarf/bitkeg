@@ -1,15 +1,4 @@
-#include <map>
-#include <string>
-#include <vector>
-#include <memory>
-#include <utility>
 #include "../include/bitkeg.h"
-
-using std::map;
-using std::string;
-using std::vector;
-using std::shared_ptr;
-using std::pair;
 
 // Bitkeg implementations
 Bitkeg::Bitkeg() : open_kegs_() {}
@@ -48,8 +37,8 @@ void KeyDir::Put(string key, BitkegEntry val) {
 
 vector<string> KeyDir::ListKeys() {
   vector<string> v;
-  for (auto pair : entry_map_) {
-    v.push_back(pair.first);
+  for (auto p : entry_map_) {
+    v.push_back(p.first);
   }
 
   return v;
@@ -59,3 +48,21 @@ string KeyDir::Dir() {
   return dir_;
 }
 
+//KegProcess implementations
+KegProcess::KegProcess(KeyDir k) : key_dir_(k) {}
+
+vector<string> KegProcess::ListKeys() {
+  return key_dir_.ListKeys();
+}
+
+void KegProcess::Put(string key, string value) {
+  auto t = time(nullptr);
+  auto b = BitkegEntry{
+      .file_id = "",
+      .value_sz = 0,
+      .value_pos = 0,
+      .t_stamp = t,
+  };
+
+  key_dir_.Put(key, b);
+}

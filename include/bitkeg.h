@@ -1,10 +1,10 @@
 #ifndef BITKEG_BITKEG_H
 #define BITKEG_BITKEG_H
 
+#include <vector>
 #include <map>
 #include <string>
 #include <memory>
-#include <vector>
 #include <ctime>
 
 using std::string;
@@ -12,12 +12,13 @@ using std::map;
 using std::shared_ptr;
 using std::vector;
 using std::time_t;
+using std::pair;
 
 struct BitkegEntry {
   string file_id;
   int value_sz;
   long value_pos;
-  time_t tstamp;
+  time_t t_stamp;
 };
 
 class KeyDir {
@@ -37,9 +38,11 @@ class KeyDir {
   map<string, const BitkegEntry> entry_map_;
 };
 
-class KegInstance {
+class KegProcess {
  public:
+  KegProcess(KeyDir k);
   void Put(string key, string value);
+  vector<string> ListKeys();
  private:
   KeyDir key_dir_;
 };

@@ -6,7 +6,7 @@ steps:
     image: gcc:10
     commands:
       - apt-get update
-      - apt-get install cmake
+      - apt-get install cmake -y
       - mkdir build && cd build
       - cmake .. && make
       - ./runUnitTests

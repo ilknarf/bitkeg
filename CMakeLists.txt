@@ -20,7 +20,7 @@ file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cc)
 add_library(bitkeg ${SRC_FILES})
 
 #gtest
-add_subdirectory(./lib/googletest)
+add_subdirectory(${PROJECT_SOURCE_DIR}/lib/googletest)
 
 enable_testing()
 

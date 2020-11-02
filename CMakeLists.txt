@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 2.8.10)
 
 # Project names
 set(PROJECT_NAME bitkeg)

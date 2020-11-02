@@ -34,4 +34,4 @@ target_link_libraries(runUnitTests gtest gtest_main)
 target_link_libraries(runUnitTests bitkeg)
 
 add_test(UnitTests runUnitTests)
-add_custom_target(check-tests COMMAND runUnitTests --verbose)
+add_custom_target(check-tests COMMAND ${CMAKE_CTEST_COMMAND} --verbose)

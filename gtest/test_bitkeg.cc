@@ -2,6 +2,8 @@
 
 #include "bitkeg.h"
 
+namespace bitkeg {
+// Check whether insertion is stored in map.
 TEST(KeyDir, SuccessfulInsertion) {
   auto key_dir = new KeyDir("hello");
   key_dir->Put("hello", BitkegEntry{});
@@ -12,4 +14,5 @@ TEST(KeyDir, SuccessfulInsertion) {
 
 TEST(Nothing, Something) {
   EXPECT_EQ(0, 0);
+}
 }

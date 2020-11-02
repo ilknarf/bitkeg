@@ -18,6 +18,8 @@ using std::vector;
 using std::time_t;
 using std::pair;
 
+namespace bitkeg {
+
 struct BitkegEntry {
   string file_id;
   int value_sz;
@@ -45,6 +47,7 @@ class KeyDir {
 class KegProcess {
  public:
   KegProcess(shared_ptr<KeyDir> k);
+  ~KegProcess();
   void Put(string key, string value);
   vector<string> ListKeys();
  private:
@@ -56,7 +59,7 @@ class KegProcess {
 class Bitkeg {
  public:
   Bitkeg();
-  KegProcess* Open(string dir);
+  KegProcess Open(string dir);
  private:
   map<string, shared_ptr<KeyDir> > open_kegs_;
 };
@@ -64,7 +67,8 @@ class Bitkeg {
 string RandomString();
 
 class FileExistsException : virtual public std::exception {
-  const char* what() noexcept;
+  const char *what() noexcept;
 };
 
+} // namespace bitkeg
 #endif //BITKEG_BITKEG_H

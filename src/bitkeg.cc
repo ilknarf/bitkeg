@@ -1,16 +1,17 @@
 #include "../include/bitkeg.h"
 
+namespace bitkeg {
 // Bitkeg implementations
 Bitkeg::Bitkeg() : open_kegs_() {}
 
-KegProcess* Bitkeg::Open(string dir) {
+KegProcess Bitkeg::Open(string dir) {
   if (open_kegs_.count(dir) > 0) {
-    return new KegProcess(open_kegs_.at(dir));
+    return KegProcess(open_kegs_.at(dir));
   } else {
     auto new_keg_instance = std::make_shared<KeyDir>(dir);
     open_kegs_.insert(pair<string, shared_ptr<KeyDir> >(dir, new_keg_instance));
 
-    return new KegProcess(new_keg_instance);
+    return KegProcess(new_keg_instance);
   }
 }
 
@@ -19,7 +20,7 @@ KeyDir::KeyDir(string dir) : dir_(dir) {}
 
 template<typename Acc>
 Acc KeyDir::Fold(Acc (*fn)(string key, string val, Acc so_far), Acc acc0) {
-  for (auto key : ListKeys() ) {
+  for (auto key : ListKeys()) {
     auto val = Get(key);
     acc0 = fn(key, val, acc0);
   }
@@ -51,8 +52,8 @@ const string KeyDir::Dir() {
 //KegProcess implementations
 KegProcess::KegProcess(shared_ptr<KeyDir> k) : key_dir_(*k), current_file_() {
   string filepath = RandomString();
-  if (std::filesystem::exists(filepath)) {
-    throw 1;
+  while (std::filesystem::exists(filepath)) {
+    filepath = RandomString();
   }
   current_file_.open(filepath, std::ios::binary);
 }
@@ -72,6 +73,20 @@ void KegProcess::Put(string key, string value) {
 
   key_dir_.Put(key, b);
 }
+KegProcess::~KegProcess() {
+  delete (&current_file_);
+}
+void KegProcess::OpenNewFile() {
+  current_file_.close();
+  current_file_ = std::ofstream();
+
+  string filepath = RandomString();
+  while (std::filesystem::exists(filepath)) {
+    filepath = RandomString();
+  }
+
+  current_file_.open(filepath, std::ios::binary);
+}
 
 // STUB for random string function
 string RandomString() {
@@ -82,3 +97,5 @@ string RandomString() {
 const char *FileExistsException::what() noexcept {
   return "File already exists";
 }
+
+} // namespace bitkeg

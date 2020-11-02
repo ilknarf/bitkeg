@@ -7,5 +7,6 @@ steps:
     commands:
       - apt-get update
       - apt-get install cmake
-      - cmake . && make
+      - mkdir build && cd build
+      - cmake .. && make
       - ./runUnitTests

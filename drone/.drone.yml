@@ -5,6 +5,7 @@ steps:
   - name: test
     image: gcc:10
     commands:
+      - git submodule update --init --recursive
       - apt-get update
       - apt-get install cmake -y
       - mkdir build && cd build

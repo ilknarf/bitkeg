@@ -9,4 +9,4 @@ steps:
       - apt-get install cmake -y
       - mkdir build && cd build
       - cmake .. && make
-      - ./runUnitTests
+      - make test

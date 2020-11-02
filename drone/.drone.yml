@@ -1,0 +1,11 @@
+kind: pipeline
+type: docker
+name: default
+steps:
+  - name: test
+    image: gcc:10
+    commands:
+      - apt-get update
+      - apt-get install cmake
+      - cmake . && make
+      - ./runUnitTests

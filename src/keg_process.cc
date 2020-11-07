@@ -5,7 +5,7 @@ namespace bitkeg {
 std::string RandomString();
 
 //KegProcess implementations
-KegProcess::KegProcess(std::shared_ptr<KeyDir> k) {
+KegProcess::KegProcess(std::shared_ptr<KeyDir> k) : current_file_() {
   key_dir_ = k;
 
   std::string filepath = RandomString();

@@ -2,8 +2,9 @@
 #define BITKEG_INCLUDE_KEG_PROCESS_H_
 
 #include <string>
-#include <iostream>
+#include <fstream>
 #include <filesystem>
+#include <memory>
 
 #include "keydir.h"
 
@@ -30,4 +31,5 @@ class FileExistsException : virtual public std::exception {
 };
 
 } // namespace bitkeg
+
 #endif //BITKEG_INCLUDE_KEG_PROCESS_H_

@@ -1,15 +1,7 @@
 #ifndef BITKEG_BITKEG_H
 #define BITKEG_BITKEG_H
 
-#include <vector>
 #include <unordered_map>
-#include <string>
-#include <memory>
-#include <ctime>
-#include <iostream>
-#include <fstream>
-#include <filesystem>
-#include <exception>
 
 #include "../include/keydir.h"
 #include "../include/keg_process.h"
@@ -25,4 +17,5 @@ class Bitkeg {
 };
 
 } // namespace bitkeg
+
 #endif //BITKEG_BITKEG_H

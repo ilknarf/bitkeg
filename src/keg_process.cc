@@ -5,7 +5,7 @@ namespace bitkeg {
 std::string RandomString();
 
 //KegProcess implementations
-KegProcess::KegProcess(std::shared_ptr<KeyDir> k) : current_file_() {
+KegProcess::KegProcess(std::shared_ptr<KeyDir> k) {
   key_dir_ = k;
 
   std::string filepath = RandomString();
@@ -13,7 +13,7 @@ KegProcess::KegProcess(std::shared_ptr<KeyDir> k) : current_file_() {
     filepath = RandomString();
   }
 
-  current_file_.open(filepath, std::ios::binary);
+  current_file_ = std::ofstream (filepath, std::ios::binary);
 }
 
 std::vector<std::string> KegProcess::ListKeys() {

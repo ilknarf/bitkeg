@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "keydir.h"
+#include "bitkeg_entry.h"
 
 namespace bitkeg {
 

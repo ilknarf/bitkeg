@@ -1,10 +1,10 @@
 #include "gtest/gtest.h"
 
-#include "bitkeg.h"
+#include "keydir.h"
 
 namespace bitkeg {
 // Check whether insertion is stored in map.
-TEST(KeyDir, SuccessfulInsertion) {
+TEST(KeyDirTest, SuccessfulInsertionTest) {
   auto key_dir = new KeyDir("hello");
   key_dir->Put("hello", BitkegEntry{});
 
@@ -12,7 +12,7 @@ TEST(KeyDir, SuccessfulInsertion) {
   EXPECT_EQ(1, l);
 }
 
-TEST(Nothing, Something) {
+TEST(KeyDirTest, SomethingTest) {
   EXPECT_EQ(0, 0);
 }
 }

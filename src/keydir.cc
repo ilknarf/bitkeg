@@ -30,6 +30,8 @@ void KeyDir::Put(std::string key, BitkegEntry val) {
   entry_map_[key] = val;
 }
 
+void KeyDir::Merge() {}
+
 std::vector<std::string> KeyDir::ListKeys() {
   // get read latch
   std::shared_lock shared(rw_latch_);

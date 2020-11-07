@@ -1,5 +1,7 @@
 #include "../include/keydir.h"
 
+namespace bitkeg {
+
 KeyDir::KeyDir(std::string dir) : dir_(dir) {}
 
 template<typename Acc>
@@ -45,3 +47,5 @@ const std::string KeyDir::Dir() {
   std::shared_lock shared(rw_latch_);
   return dir_;
 }
+
+} // namespace bitkeg

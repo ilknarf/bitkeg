@@ -9,6 +9,8 @@
 
 #include "../include/bitkeg_entry.h"
 
+namespace bitkeg {
+
 class KeyDir {
  public:
   // default constructor
@@ -33,5 +35,7 @@ class KeyDir {
 
   std::unordered_map<std::string, BitkegEntry> entry_map_;
 };
+
+} // namespace bitkeg
 
 #endif //BITKEG_SRC_KEYDIR_H_

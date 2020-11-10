@@ -10,7 +10,7 @@ namespace bitkeg {
 struct BitkegEntry {
   std::string file_id;
   unsigned long value_sz;
-  unsigned long long value_pos;
+  long long value_pos;
   time_t t_stamp;
 };
 

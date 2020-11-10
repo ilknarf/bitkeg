@@ -15,4 +15,5 @@ TEST(KeyDirTest, SuccessfulInsertionTest) {
 TEST(KeyDirTest, SomethingTest) {
   EXPECT_EQ(0, 0);
 }
-}
+
+} // namespace bitkeg

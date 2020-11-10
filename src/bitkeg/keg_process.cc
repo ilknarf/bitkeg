@@ -1,4 +1,5 @@
 #include "bitkeg/keg_process.h"
+#include "util/crc8.h"
 
 namespace bitkeg {
 
@@ -27,11 +28,17 @@ std::vector<std::string> KegProcess::ListKeys() {
 
 void KegProcess::Put(std::string key, std::string val) {
   auto t = std::time(nullptr);
-  auto val_sz = (uint32_t) val.length();
-  auto key_sz = (uint8_t) key.length();
+  uint32_t val_sz = val.length();
+  uint16_t key_sz = key.length();
+
+  // compute crc-8
+  crc8::CRC8 crc;
+  crc.Add(t);
+  crc.Add(key_sz);
+  crc.Add(val_sz);
 
   // write to file
-  current_file_ << 5;
+  current_file_ << crc.Sum();
   current_file_ << t << key_sz << val_sz;
   current_file_ << key;
 
@@ -46,6 +53,10 @@ void KegProcess::Put(std::string key, std::string val) {
   };
 
   key_dir_->Put(key, b);
+}
+
+std::string KegProcess::Get(std::string key) {
+  return key_dir_->Get(key);
 }
 
 std::string KegProcess::CurrentFilename() {

@@ -30,7 +30,17 @@ TEST(CRC8Test, AddCharTest) {
   uint8_t expected = 0xac;
 
   CRC8 crc;
-  crc.Add(c);
+  crc.Add((uint8_t) c);
+
+  EXPECT_EQ(crc.Sum(), expected);
+}
+
+TEST(CRC8Test, AddIntTest) {
+  uint16_t l = (0xbe << 8) + 0xef;
+  uint8_t expected = 0x92;
+
+  CRC8 crc;
+  crc.Add(l);
 
   EXPECT_EQ(crc.Sum(), expected);
 }

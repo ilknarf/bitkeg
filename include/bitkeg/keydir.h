@@ -19,7 +19,7 @@ class KeyDir {
   template<typename Acc>
   Acc Fold(Acc (*fn)(std::string _key, std::string _val, Acc _so_far), Acc acc0);
   // Get key
-  BitkegEntry Get(std::string key);
+  std::string Get(std::string key);
   // List all keys
   std::vector<std::string> ListKeys();
   // Put keys
@@ -27,7 +27,7 @@ class KeyDir {
   // Merge keg
   void Merge();
   // Get working directory
-  const std::string Dir();
+  std::string Dir();
 
  protected:
   const std::string dir_;

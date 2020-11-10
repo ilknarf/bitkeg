@@ -16,11 +16,11 @@ Acc KeyDir::Fold(Acc (*fn)(std::string key, std::string val, Acc so_far), Acc ac
   return acc0;
 }
 
-BitkegEntry KeyDir::Get(std::string key) {
+std::string KeyDir::Get(std::string key) {
   // get read latch
   std::shared_lock shared(rw_latch_);
 
-  return BitkegEntry{};
+  return "";
 }
 
 void KeyDir::Put(std::string key, BitkegEntry val) {
@@ -44,7 +44,7 @@ std::vector<std::string> KeyDir::ListKeys() {
   return v;
 }
 
-const std::string KeyDir::Dir() {
+std::string KeyDir::Dir() {
   // get read latch
   std::shared_lock shared(rw_latch_);
   return dir_;

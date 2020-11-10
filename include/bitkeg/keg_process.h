@@ -5,9 +5,10 @@
 #include <fstream>
 #include <filesystem>
 #include <memory>
+#include <time.h>
 
 #include "keydir.h"
-#include "bitkeg_entry.h"
+#include "bitkeg/bitkeg_entry.h"
 
 namespace bitkeg {
 
@@ -25,10 +26,6 @@ class KegProcess {
   std::shared_ptr<KeyDir> key_dir_;
   std::string current_filename_;
   std::ofstream current_file_;
-};
-
-class FileExistsException : virtual public std::exception {
-  const char *what() noexcept;
 };
 
 } // namespace bitkeg

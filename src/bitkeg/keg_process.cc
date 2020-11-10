@@ -1,6 +1,11 @@
-#include "../include/keg_process.h"
+#include "bitkeg/keg_process.h"
 
 namespace bitkeg {
+
+// exception header
+class FileExistsException : virtual public std::exception {
+  const char *what() noexcept;
+};
 
 std::string RandomString();
 
@@ -20,12 +25,23 @@ std::vector<std::string> KegProcess::ListKeys() {
   return key_dir_->ListKeys();
 }
 
-void KegProcess::Put(std::string key, std::string value) {
-  auto t = time(nullptr);
+void KegProcess::Put(std::string key, std::string val) {
+  auto t = std::time(nullptr);
+  auto val_sz = (uint32_t) val.length();
+  auto key_sz = (uint8_t) key.length();
+
+  // write to file
+  current_file_ << 5;
+  current_file_ << t << key_sz << val_sz;
+  current_file_ << key;
+
+  auto val_pos = current_file_.tellp();
+  current_file_ << val;
+
   auto b = BitkegEntry{
       .file_id = CurrentFilename(),
-      .value_sz = 0,
-      .value_pos = 0,
+      .value_sz = val_sz, // value length in bytes
+      .value_pos = val_pos, // current write location
       .t_stamp = t,
   };
 

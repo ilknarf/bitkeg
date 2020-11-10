@@ -1,4 +1,4 @@
-#include "../include/keydir.h"
+#include "bitkeg/keydir.h"
 
 namespace bitkeg {
 

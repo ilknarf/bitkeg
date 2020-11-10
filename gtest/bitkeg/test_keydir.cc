@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "keydir.h"
+#include "bitkeg/keydir.h"
 
 namespace bitkeg {
 // Check whether insertion is stored in map.

@@ -7,7 +7,7 @@
 #include <mutex>
 #include <shared_mutex>
 
-#include "../include/bitkeg_entry.h"
+#include "bitkeg/bitkeg_entry.h"
 
 namespace bitkeg {
 

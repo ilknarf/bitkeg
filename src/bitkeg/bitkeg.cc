@@ -1,4 +1,4 @@
-#include "../include/bitkeg.h"
+#include "bitkeg/bitkeg.h"
 
 namespace bitkeg {
 // Bitkeg implementations

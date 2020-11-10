@@ -15,7 +15,7 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
-file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cc)
+file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/**/*.cc)
 
 add_library(bitkeg ${SRC_FILES})
 
@@ -26,7 +26,7 @@ enable_testing()
 
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/gtest/*.cc)
+file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/gtest/**/*.cc)
 
 add_executable(runUnitTests ${TEST_SRC_FILES})
 

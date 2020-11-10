@@ -8,11 +8,9 @@
 namespace bitkeg {
 
 struct BitkegEntry {
-  friend class KeyDir;
-
   std::string file_id;
-  int value_sz;
-  long value_pos;
+  unsigned long value_sz;
+  unsigned long long value_pos;
   time_t t_stamp;
 };
 

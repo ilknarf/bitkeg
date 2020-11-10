@@ -3,8 +3,8 @@
 
 #include <unordered_map>
 
-#include "../include/keydir.h"
-#include "../include/keg_process.h"
+#include "keydir.h"
+#include "keg_process.h"
 
 namespace bitkeg {
 

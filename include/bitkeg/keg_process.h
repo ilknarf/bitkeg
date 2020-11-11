@@ -15,9 +15,12 @@ namespace bitkeg {
 class KegProcess {
  public:
   explicit KegProcess(std::shared_ptr<KeyDir> k);
-  // put key
+  // put key-value
   void Put(std::string key, std::string value);
+  // get value
   std::string Get(std::string key);
+  // check contains key
+  bool Contains(std::string key);
   // list all keys
   std::vector<std::string> ListKeys();
   // get current filename

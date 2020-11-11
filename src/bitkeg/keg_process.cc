@@ -1,5 +1,7 @@
 #include "bitkeg/keg_process.h"
+
 #include "util/crc8.h"
+#include "bitkeg/bitkeg.h"
 
 namespace bitkeg {
 
@@ -37,13 +39,16 @@ void KegProcess::Put(std::string key, std::string val) {
   crc.Add(key_sz);
   crc.Add(val_sz);
 
+  // get val offset
+  auto val_pos = current_file_.tellp();
+
   // write to file
   current_file_ << crc.Sum();
   current_file_ << t << key_sz << val_sz;
   current_file_ << key;
 
-  auto val_pos = current_file_.tellp();
   current_file_ << val;
+  current_file_ << '\0';
 
   auto b = BitkegEntry{
       .file_id = CurrentFilename(),
@@ -56,7 +61,47 @@ void KegProcess::Put(std::string key, std::string val) {
 }
 
 std::string KegProcess::Get(std::string key) {
-  return key_dir_->Get(key);
+  auto entry = key_dir_->Get(key);
+
+  auto filename = entry.file_id;
+  auto offset = entry.value_pos;
+
+  std::ifstream f;
+  f.open(key_dir_->Dir(), std::ios::binary);
+  f.seekg(offset);
+
+  char *bytes = new char [MAX_ENTRY_SIZE];
+
+  f.getline(bytes, MAX_ENTRY_SIZE, '\0');
+
+  uint8_t checksum = bytes[0];
+
+  crc8::CRC8 crc;
+
+  int i= 1;
+  while (bytes[i] != '\0') {
+    crc.Add((uint8_t) bytes[i]);
+  }
+
+  if (crc.Sum() != checksum) {
+    //STUB handle mismatched checksums
+    throw 1;
+  }
+
+  // checksum + timestamp + 2 (key_length) + 4 (val_length) + key_length
+  size_t start_position = 1 + sizeof(time_t) + 6 + key.length();
+
+  // use start_position to get string
+  std::string value(&bytes[start_position]);
+
+  // delete buffer
+  delete[] bytes;
+
+  return value;
+}
+
+bool KegProcess::Contains(std::string key) {
+  return key_dir_->Contains(key);
 }
 
 std::string KegProcess::CurrentFilename() {

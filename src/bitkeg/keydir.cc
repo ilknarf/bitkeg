@@ -16,14 +16,26 @@ Acc KeyDir::Fold(Acc (*fn)(std::string key, std::string val, Acc so_far), Acc ac
   return acc0;
 }
 
-std::string KeyDir::Get(std::string key) {
+BitkegEntry KeyDir::Get(std::string key) {
   // get read latch
   std::shared_lock shared(rw_latch_);
 
-  return "";
+  // get pair
+  auto entry = entry_map_.at(key);
+
+  return entry;
 }
 
-void KeyDir::Put(std::string key, BitkegEntry val) {
+bool KeyDir::Contains(std::string key) {
+  // get read latch
+  std::shared_lock shared(rw_latch_);
+
+  auto it = entry_map_.find(key);
+
+  return it != entry_map_.end();
+}
+
+void KeyDir::Put(const std::string key, BitkegEntry val) {
   // get write latch
   std::lock_guard lck(rw_latch_);
 
@@ -47,7 +59,7 @@ std::vector<std::string> KeyDir::ListKeys() {
 std::string KeyDir::Dir() {
   // get read latch
   std::shared_lock shared(rw_latch_);
-  return dir_;
+  return dir_.string();
 }
 
 } // namespace bitkeg

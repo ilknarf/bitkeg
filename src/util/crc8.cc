@@ -43,7 +43,7 @@ namespace crc8 {
     }
   }
 
-  void Add(time_t t) {
+  void CRC8::Add(time_t t) {
     uint8_t *bytes = new uint8_t[4];
     for (int i = 0; i < SIZE_T_SIZE; i++) {
       bytes[SIZE_T_SIZE - 1 - i] = t & 0xff;

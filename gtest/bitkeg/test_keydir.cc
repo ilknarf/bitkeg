@@ -12,6 +12,17 @@ TEST(KeyDirTest, SuccessfulInsertionTest) {
   EXPECT_EQ(1, l);
 }
 
+// Check whether insertion is stored in map.
+TEST(KeyDirTest, KeyNotExistsTest) {
+  auto key_dir = new KeyDir("hello");
+  key_dir->Put("hello", BitkegEntry{});
+
+  auto l = key_dir->ListKeys().size();
+  EXPECT_EQ(1, l);
+
+  EXPECT_EQ(key_dir->Contains("non-key"), false);
+}
+
 TEST(KeyDirTest, SomethingTest) {
   EXPECT_EQ(0, 0);
 }

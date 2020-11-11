@@ -8,6 +8,8 @@
 
 namespace bitkeg {
 
+const int MAX_ENTRY_SIZE = 1024;
+
 class Bitkeg {
  public:
   Bitkeg();

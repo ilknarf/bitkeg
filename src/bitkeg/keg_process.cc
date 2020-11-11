@@ -66,8 +66,11 @@ std::string KegProcess::Get(std::string key) {
   auto filename = entry.file_id;
   auto offset = entry.value_pos;
 
+  std::filesystem::path file (key_dir_->Dir());
+  file.append(filename);
+
   std::ifstream f;
-  f.open(key_dir_->Dir(), std::ios::binary);
+  f.open(filename, std::ios::binary);
   f.seekg(offset);
 
   char *bytes = new char [MAX_ENTRY_SIZE];

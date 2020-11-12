@@ -1,6 +1,6 @@
 #include "util/crc8.h"
 
-namespace crc8 {
+namespace util {
   CRC8::CRC8() : remainder_(CRC8_INIT) {}
 
   void CRC8::Add(uint8_t c) {

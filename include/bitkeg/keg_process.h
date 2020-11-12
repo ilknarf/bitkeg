@@ -19,6 +19,8 @@ class KegProcess {
   void Put(std::string key, std::string value);
   // get value
   std::string Get(std::string key);
+  // delete key
+  void Delete(std::string key);
   // check contains key
   bool Contains(std::string key);
   // list all keys

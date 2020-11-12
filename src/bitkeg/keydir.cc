@@ -28,6 +28,10 @@ BitkegEntry KeyDir::Get(std::string key) {
   return entry;
 }
 
+void KeyDir::Delete(std::string key) {
+  entry_map_.erase(key);
+}
+
 bool KeyDir::Contains(std::string key) {
   // get read latch
   std::shared_lock shared(rw_latch_);

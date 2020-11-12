@@ -1,18 +1,18 @@
 #include "bitkeg/keg_process.h"
 
 #include "util/crc8.h"
-#include "bitkeg/bitkeg.h"
+#include "util/random_string.h"
 
 #include <iostream>
 
 namespace bitkeg {
 
+const size_t FILENAME_SIZE = 31;
+
 // exception header
 class FileExistsException : virtual public std::exception {
   const char *what() noexcept;
 };
-
-std::string RandomString();
 
 //KegProcess implementations
 KegProcess::KegProcess(std::shared_ptr<KeyDir> k) {
@@ -21,11 +21,11 @@ KegProcess::KegProcess(std::shared_ptr<KeyDir> k) {
   auto dir = k->Dir();
 
   std::filesystem::path filepath(dir);
-  filepath.append(RandomString());
+  filepath.append(util::RandomString(FILENAME_SIZE));
 
   while (std::filesystem::exists(filepath)) {
     filepath = std::filesystem::path(dir);
-    filepath.append(RandomString());
+    filepath.append(util::RandomString(FILENAME_SIZE));
   }
 
   current_file_ = std::ofstream (filepath, std::ios::binary);
@@ -42,7 +42,7 @@ void KegProcess::Put(std::string key, std::string val) {
   uint16_t key_sz = key.length();
 
   // compute crc-8
-  crc8::CRC8 crc;
+  util::CRC8 crc;
   crc.Add(t);
   crc.Add(key_sz);
   crc.Add(val_sz);
@@ -55,7 +55,7 @@ void KegProcess::Put(std::string key, std::string val) {
 
   // add time_t
   for (int i = sizeof(t) - 1; i >= 0; i--) {
-    char next = (t >> (i * 8)) & 0xff;
+    char next = (t >> (i * 8)) & 0xff;  // NOLINT
     current_file_ << next;
   }
 
@@ -129,7 +129,7 @@ std::string KegProcess::Get(std::string key) {
   }
 
   // checksum
-  crc8::CRC8 crc;
+  util::CRC8 crc;
 
   crc.Add((uint8_t) checksum);
   crc.Add(t);
@@ -163,7 +163,13 @@ std::string KegProcess::Get(std::string key) {
     //STUB handle mismatched checksums
   }
 
+  // TODO add struct to allow for null return and other metadata
   return val;
+}
+
+void KegProcess::Delete(std::string key) {
+  Put(key, "");
+  key_dir_->Delete(key);
 }
 
 bool KegProcess::Contains(std::string key) {
@@ -178,9 +184,9 @@ void KegProcess::OpenNewFile() {
   current_file_.close();
   current_file_ = std::ofstream();
 
-  std::string filepath = RandomString();
+  std::string filepath = util::RandomString(FILENAME_SIZE);
   while (std::filesystem::exists(filepath)) {
-    filepath = RandomString();
+    filepath = util::RandomString(FILENAME_SIZE);
   }
 
   current_file_.open(filepath, std::ios::binary);

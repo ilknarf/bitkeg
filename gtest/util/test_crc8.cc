@@ -3,7 +3,7 @@
 #include <string>
 #include "util/crc8.h"
 
-namespace crc8 {
+namespace util {
 
 // test check value for crc8
 TEST(CRC8Test, CheckValueTest) {

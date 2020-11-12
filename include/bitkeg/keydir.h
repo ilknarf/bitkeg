@@ -22,6 +22,8 @@ class KeyDir {
   Acc Fold(Acc (*fn)(std::string _key, std::string _val, Acc _so_far), Acc acc0);
   // Get value entry
   BitkegEntry Get(std::string key);
+  // Delete key
+  void Delete(std::string key);
   // Contains key
   bool Contains(std::string key);
   // List all keys

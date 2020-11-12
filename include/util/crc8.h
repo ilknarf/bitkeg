@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace crc8 {
+namespace util {
 
 const uint8_t CRC8_INIT = 0xff;
 const uint8_t CRC8_POLY = 0x31;

@@ -1,6 +1,8 @@
 #ifndef BITKEG_INCLUDE_UTIL_RANDOM_STRING_H_
 #define BITKEG_INCLUDE_UTIL_RANDOM_STRING_H_
+
 #include <string>
+#include <random>
 
 namespace util {
 

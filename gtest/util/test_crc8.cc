@@ -4,6 +4,7 @@
 #include "util/crc8.h"
 
 namespace crc8 {
+
 // test check value for crc8
 TEST(CRC8Test, CheckValueTest) {
   std::string s = "123456789";

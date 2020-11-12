@@ -2,7 +2,9 @@
 
 namespace bitkeg {
 
-KeyDir::KeyDir(std::string dir) : dir_(dir) {}
+KeyDir::KeyDir(std::string dir) : dir_(dir) {
+  std::filesystem::create_directories(dir);
+}
 
 template<typename Acc>
 Acc KeyDir::Fold(Acc (*fn)(std::string key, std::string val, Acc so_far), Acc acc0) {

@@ -3,6 +3,8 @@
 #include "util/crc8.h"
 #include "bitkeg/bitkeg.h"
 
+#include <iostream>
+
 namespace bitkeg {
 
 // exception header
@@ -16,12 +18,18 @@ std::string RandomString();
 KegProcess::KegProcess(std::shared_ptr<KeyDir> k) {
   key_dir_ = k;
 
-  std::string filepath = RandomString();
+  auto dir = k->Dir();
+
+  std::filesystem::path filepath(dir);
+  filepath.append(RandomString());
+
   while (std::filesystem::exists(filepath)) {
-    filepath = RandomString();
+    filepath = std::filesystem::path(dir);
+    filepath.append(RandomString());
   }
 
   current_file_ = std::ofstream (filepath, std::ios::binary);
+  current_filename_ = filepath.generic_string();
 }
 
 std::vector<std::string> KegProcess::ListKeys() {
@@ -41,19 +49,38 @@ void KegProcess::Put(std::string key, std::string val) {
 
   // get val offset
   auto val_pos = current_file_.tellp();
-
   // write to file
-  current_file_ << crc.Sum();
-  current_file_ << t << key_sz << val_sz;
-  current_file_ << key;
 
+  current_file_ << crc.Sum();
+
+  // add time_t
+  for (int i = sizeof(t) - 1; i >= 0; i--) {
+    char next = (t >> (i * 8)) & 0xff;
+    current_file_ << next;
+  }
+
+  // add key_sz
+  for (int i = sizeof(key_sz) - 1; i >= 0; i--) {
+    char next = (key_sz >> (i * 8)) & 0xff;  // NOLINT
+    current_file_ << next;
+  }
+
+  // add val_sz
+  for (int i = sizeof(val_sz) - 1; i >= 0; i--) {
+    char next = (val_sz >> (i * 8)) & 0xff;  // NOLINT
+    current_file_ << next;
+  }
+
+  current_file_ << key;
   current_file_ << val;
-  current_file_ << '\0';
+
+  // flush to write
+  current_file_.flush();
 
   auto b = BitkegEntry{
       .file_id = CurrentFilename(),
-      .value_sz = val_sz, // value length in bytes
-      .value_pos = val_pos, // current write location
+      .value_sz = val_sz,  // value length in bytes
+      .value_pos = val_pos,  // current write location
       .t_stamp = t,
   };
 
@@ -66,41 +93,77 @@ std::string KegProcess::Get(std::string key) {
   auto filename = entry.file_id;
   auto offset = entry.value_pos;
 
-  std::filesystem::path file (key_dir_->Dir());
-  file.append(filename);
-
   std::ifstream f;
   f.open(filename, std::ios::binary);
   f.seekg(offset);
 
-  char *bytes = new char [MAX_ENTRY_SIZE];
+  char checksum;
+  f.read(&checksum, 1);
+  time_t t = 0;
 
-  f.getline(bytes, MAX_ENTRY_SIZE, '\0');
+  time_t t_stamp = 0;
+  for (int i = 0; i < sizeof(time_t); i++) {
+    char tmp;
+    f.read(&tmp, 1);
+    // shift left a byte
+    t_stamp <<= 8;
+    t_stamp += tmp;
+  }
 
-  uint8_t checksum = bytes[0];
+  uint16_t key_sz = 0;
+  for (int i = 0; i < sizeof(uint16_t); i++) {
+    char tmp;
+    f.read(&tmp, 1);
+    // shift left a byte
+    key_sz <<= 8;
+    key_sz += tmp;
+  }
 
+  uint32_t val_sz = 0;
+  for (int i = 0; i < sizeof(uint32_t); i++) {
+    char tmp;
+    f.read(&tmp, 1);
+    // shift left a byte
+    val_sz <<= 8;
+    val_sz += tmp;
+  }
+
+  // checksum
   crc8::CRC8 crc;
 
-  int i= 1;
-  while (bytes[i] != '\0') {
-    crc.Add((uint8_t) bytes[i]);
+  crc.Add((uint8_t) checksum);
+  crc.Add(t);
+  crc.Add(key_sz);
+  crc.Add(val_sz);
+
+  // get key from disk
+  char *disk_key = new char[key_sz];
+  f.read(disk_key, key_sz);
+
+  for (int i = 0; i < key_sz; i++) {
+    crc.Add((uint8_t) disk_key[i]);
   }
+
+  // get value
+  char *value = new char[val_sz];
+  f.read(value, val_sz);
+
+  std::string val;
+
+  for (int i = 0; i < val_sz; i++) {
+    auto next = value[i];
+    crc.Add((uint8_t) next);
+    val.push_back(next);
+  }
+
+  delete[] disk_key;
+  delete[] value;
 
   if (crc.Sum() != checksum) {
     //STUB handle mismatched checksums
-    throw 1;
   }
 
-  // checksum + timestamp + 2 (key_length) + 4 (val_length) + key_length
-  size_t start_position = 1 + sizeof(time_t) + 6 + key.length();
-
-  // use start_position to get string
-  std::string value(&bytes[start_position]);
-
-  // delete buffer
-  delete[] bytes;
-
-  return value;
+  return val;
 }
 
 bool KegProcess::Contains(std::string key) {

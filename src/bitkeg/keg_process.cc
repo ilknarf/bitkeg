@@ -33,11 +33,6 @@ KegProcess::KegProcess(std::shared_ptr<KeyDir> k) {
   current_filename_ = filepath.generic_string();
 }
 
-template<typename Acc>
-Acc KegProcess::Fold(std::function<Acc(std::string, std::string, Acc)> fn, Acc acc0) {
-  return key_dir_->Fold<Acc>(fn, acc0);
-}
-
 std::vector<std::string> KegProcess::ListKeys() {
   return key_dir_->ListKeys();
 }

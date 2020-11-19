@@ -14,10 +14,21 @@ namespace bitkeg {
 
 class KegProcess {
  public:
-  explicit KegProcess(std::shared_ptr<KeyDir> k);
-  // fold value
   template<typename Acc>
-  Acc Fold(KeyDir::FoldFn<Acc> fn, Acc acc0);
+  using FoldFn = std::function<Acc(std::string, std::string, Acc)>;
+  explicit KegProcess(std::shared_ptr<KeyDir> k);
+  // Fold over K-V pairs
+  template<typename Acc>
+  Acc Fold(FoldFn<Acc> fn, Acc acc0) {
+    // get read latch
+    std::shared_lock shared(key_dir_->rw_latch_);
+    for (auto key : ListKeys()) {
+      auto val = Get(key);
+      acc0 = fn(key, val, acc0);
+    }
+
+    return acc0;
+  }
   // put key-value
   void Put(std::string key, std::string value);
   // get value

@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <filesystem>
+#include <functional>
 #include "bitkeg/keydir.h"
 #include "bitkeg/keg_process.h"
 
@@ -39,14 +40,8 @@ TEST(KegProcessTest, DeleteKeyTest) {
   ASSERT_EQ(keg.Get("hello"), "goodbye");
   ASSERT_EQ(keg.Get("noon"), "cowboy");
 
-
-
   // cleanup
   std::filesystem::remove_all(dir);
-}
-
-static size_t FoldLengths(std::string key, std::string val, size_t so_far) {
-  return so_far + val.length();
 }
 
 TEST(KegProcessTest, FoldTest) {
@@ -58,8 +53,9 @@ TEST(KegProcessTest, FoldTest) {
   keg.Put("hello", "goodbye");
   keg.Put("noon", "cowboy");
 
-  KeyDir::FoldFn<size_t> fn = std::function(FoldLengths);
-  auto folded = keg.Fold<size_t>(fn, 0);
+  auto folded = keg.Fold<size_t>([](std::string key, std::string val, size_t so_far) -> auto {
+        return val.length() + so_far;
+        }, 0);
 
   ASSERT_EQ(13, folded);
 

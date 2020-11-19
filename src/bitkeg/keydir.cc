@@ -6,18 +6,6 @@ KeyDir::KeyDir(std::string dir) : dir_(dir) {
   std::filesystem::create_directories(dir);
 }
 
-template<typename Acc>
-Acc KeyDir::Fold(std::function<Acc(std::string, std::string, Acc)> fn, Acc acc0) {
-  // get read latch
-  std::shared_lock shared(rw_latch_);
-  for (auto key : ListKeys()) {
-    auto val = Get(key);
-    acc0 = std::invoke(fn, key, val, acc0);
-  }
-
-  return acc0;
-}
-
 BitkegEntry KeyDir::Get(std::string key) {
   // get read latch
   std::shared_lock shared(rw_latch_);

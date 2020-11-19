@@ -16,11 +16,13 @@ namespace bitkeg {
 
 class KeyDir {
  public:
+  template<typename Acc>
+  using FoldFn = std::function<Acc(std::string, std::string, Acc)>;
   // default constructor
   KeyDir(std::string dir);
   // Fold over K-V pairs
   template<typename Acc>
-  Acc Fold(std::function<Acc(std::string, std::string, Acc)> fn, Acc acc0);
+  Acc Fold(FoldFn<Acc> fn, Acc acc0);
   // Get value entry
   BitkegEntry Get(std::string key);
   // Delete key

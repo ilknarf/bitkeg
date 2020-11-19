@@ -17,7 +17,7 @@ class KegProcess {
   explicit KegProcess(std::shared_ptr<KeyDir> k);
   // fold value
   template<typename Acc>
-  Acc Fold(std::function<Acc(std::string, std::string, Acc)> fn, Acc acc0);
+  Acc Fold(KeyDir::FoldFn<Acc> fn, Acc acc0);
   // put key-value
   void Put(std::string key, std::string value);
   // get value

@@ -12,7 +12,7 @@ Acc KeyDir::Fold(std::function<Acc(std::string, std::string, Acc)> fn, Acc acc0)
   std::shared_lock shared(rw_latch_);
   for (auto key : ListKeys()) {
     auto val = Get(key);
-    acc0 = fn(key, val, acc0);
+    acc0 = std::invoke(fn, key, val, acc0);
   }
 
   return acc0;

@@ -4,6 +4,7 @@
 #include "util/random_string.h"
 
 #include <iostream>
+#include <functional>
 
 namespace bitkeg {
 
@@ -33,7 +34,7 @@ KegProcess::KegProcess(std::shared_ptr<KeyDir> k) {
 }
 
 template<typename Acc>
-Acc KegProcess::Fold(Acc (*fn)(std::string key, std::string val, Acc so_far), Acc acc0) {
+Acc KegProcess::Fold(std::function<Acc(std::string, std::string, Acc)> fn, Acc acc0) {
   return key_dir_->Fold<Acc>(fn, acc0);
 }
 

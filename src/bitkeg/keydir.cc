@@ -7,7 +7,7 @@ KeyDir::KeyDir(std::string dir) : dir_(dir) {
 }
 
 template<typename Acc>
-Acc KeyDir::Fold(Acc (*fn)(std::string key, std::string val, Acc so_far), Acc acc0) {
+Acc KeyDir::Fold(std::function<Acc(std::string, std::string, Acc)> fn, Acc acc0) {
   // get read latch
   std::shared_lock shared(rw_latch_);
   for (auto key : ListKeys()) {

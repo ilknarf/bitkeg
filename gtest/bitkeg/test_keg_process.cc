@@ -4,6 +4,7 @@
 #include <filesystem>
 #include "bitkeg/keydir.h"
 #include "bitkeg/keg_process.h"
+#include <functional>
 
 namespace bitkeg {
 
@@ -54,11 +55,11 @@ TEST(KegProcessTest, FoldTest) {
   keg.Put("hello", "goodbye");
   keg.Put("noon", "cowboy");
 
-  auto f = [](std::string key, std::string val, int acc) -> int {
-    return acc + val.length();
-  };
+  auto folded = keg.Fold<size_t>([](std::string key, std::string val, size_t so_far) -> size_t {
+    return so_far + val.length();
+  }, 0);
 
-  ASSERT_EQ(keg.Fold<int>(f, 0), 13);
+  ASSERT_EQ(13, folded);
 
   // cleanup
   std::filesystem::remove_all(dir);

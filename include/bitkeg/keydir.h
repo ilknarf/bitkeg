@@ -8,6 +8,7 @@
 #include <shared_mutex>
 #include <fstream>
 #include <filesystem>
+#include <functional>
 
 #include "bitkeg/bitkeg_entry.h"
 
@@ -19,7 +20,7 @@ class KeyDir {
   KeyDir(std::string dir);
   // Fold over K-V pairs
   template<typename Acc>
-  Acc Fold(Acc (*fn)(std::string _key, std::string _val, Acc _so_far), Acc acc0);
+  Acc Fold(std::function<Acc(std::string, std::string, Acc)> fn, Acc acc0);
   // Get value entry
   BitkegEntry Get(std::string key);
   // Delete key

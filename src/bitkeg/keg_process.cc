@@ -32,6 +32,11 @@ KegProcess::KegProcess(std::shared_ptr<KeyDir> k) {
   current_filename_ = filepath.generic_string();
 }
 
+template<typename Acc>
+Acc KegProcess::Fold(Acc (*fn)(std::string key, std::string val, Acc so_far), Acc acc0) {
+  return key_dir_->Fold<Acc>(fn, acc0);
+}
+
 std::vector<std::string> KegProcess::ListKeys() {
   return key_dir_->ListKeys();
 }
@@ -99,7 +104,6 @@ std::string KegProcess::Get(std::string key) {
 
   char checksum;
   f.read(&checksum, 1);
-  time_t t = 0;
 
   time_t t_stamp = 0;
   for (int i = 0; i < sizeof(time_t); i++) {
@@ -132,7 +136,7 @@ std::string KegProcess::Get(std::string key) {
   util::CRC8 crc;
 
   crc.Add((uint8_t) checksum);
-  crc.Add(t);
+  crc.Add(t_stamp);
   crc.Add(key_sz);
   crc.Add(val_sz);
 

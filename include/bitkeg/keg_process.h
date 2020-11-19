@@ -15,6 +15,9 @@ namespace bitkeg {
 class KegProcess {
  public:
   explicit KegProcess(std::shared_ptr<KeyDir> k);
+  // fold value
+  template<typename Acc>
+  Acc Fold(Acc (*fn)(std::string key, std::string val, Acc so_far), Acc acc0);
   // put key-value
   void Put(std::string key, std::string value);
   // get value

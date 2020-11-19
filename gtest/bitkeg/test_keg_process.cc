@@ -45,5 +45,24 @@ TEST(KegProcessTest, DeleteKeyTest) {
   std::filesystem::remove_all(dir);
 }
 
+TEST(KegProcessTest, FoldTest) {
+  auto dir = "target/test";
+  auto k = new KeyDir(dir);
+  auto keg = KegProcess(std::shared_ptr<KeyDir> (k));
+
+  // put keys
+  keg.Put("hello", "goodbye");
+  keg.Put("noon", "cowboy");
+
+  auto f = [](std::string key, std::string val, int acc) -> int {
+    return acc + val.length();
+  };
+
+  ASSERT_EQ(keg.Fold<int>(f, 0), 13);
+
+  // cleanup
+  std::filesystem::remove_all(dir);
+}
+
 } // namespace bitkeg
 
